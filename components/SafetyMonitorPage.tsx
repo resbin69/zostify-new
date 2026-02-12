@@ -163,7 +163,7 @@ const SafetyMonitorPage: React.FC = () => {
 
               <div className="space-y-4 pt-4 border-t border-border-dark">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-400">Critical Peaks (>4.0)</span>
+                  <span className="text-slate-400">Critical Peaks (&gt;4.0)</span>
                   <span className="font-bold text-danger">4 Instances</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
