@@ -1,4 +1,4 @@
-
+import { GoogleGenerativeAI as GoogleGenAI } from "@google/generative-ai";
 import React, { useState, useEffect } from 'react';
 import MetricCard from './MetricCard';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
