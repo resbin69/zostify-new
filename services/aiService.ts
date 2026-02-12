@@ -1,5 +1,5 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI as GoogleGenAI } from "@google/generative-ai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
