@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MetricCard from './MetricCard';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { getSpatialInsights } from '../services/aiService';
 
 const data = [
   { name: '00:00', visitors: 400 },
@@ -14,6 +15,23 @@ const data = [
 ];
 
 const OverviewPage: React.FC = () => {
+  const [insights, setInsights] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const spatialMetrics = {
+    visitors: "42,810",
+    dwellTime: "18m 45s",
+    occupancy: "89%",
+    safetyIncidents: 0
+  };
+
+  const handleGenerateInsights = async () => {
+    setLoading(true);
+    const result = await getSpatialInsights(spatialMetrics);
+    setInsights(result || "No insights available.");
+    setLoading(false);
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -22,71 +40,45 @@ const OverviewPage: React.FC = () => {
           <p className="text-slate-400">Holistic view of site performance, safety, and spatial efficiency.</p>
         </div>
         <div className="flex gap-2">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map(i => (
-              <img key={i} className="size-8 rounded-full border-2 border-background-dark shadow-lg" src={`https://picsum.photos/seed/${i + 10}/100/100`} alt="user" />
-            ))}
-            <div className="size-8 rounded-full border-2 border-background-dark bg-border-dark flex items-center justify-center text-[10px] font-bold">+12</div>
-          </div>
-          <div className="text-right text-[10px] font-bold text-slate-500 uppercase flex flex-col justify-center ml-2">
-            <span>Viewing Live</span>
-            <span className="text-primary tracking-widest">Active Stakeholders</span>
-          </div>
+          <button 
+            onClick={handleGenerateInsights}
+            disabled={loading}
+            className="flex items-center gap-2 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-4 py-2 rounded-xl transition-all group"
+          >
+            <span className={`material-symbols-outlined text-sm ${loading ? 'animate-spin' : 'group-hover:rotate-12 transition-transform'}`}>psychology</span>
+            <span className="text-xs font-bold">{loading ? 'Analyzing...' : 'Generate AI Insights'}</span>
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          label="TOTAL VISITORS"
-          value="42,810"
-          trend="+12.5%"
-          trendType="positive"
-          icon="groups"
-          color="primary"
-          progress={82}
-        />
-        <MetricCard
-          label="DWELL TIME AVG"
-          value="18m 45s"
-          trend="+3.2%"
-          trendType="neutral"
-          icon="schedule"
-          color="warning"
-          progress={65}
-        />
-        <MetricCard
-          label="SAFETY INCIDENTS"
-          value="0"
-          trend="-100%"
-          trendType="positive"
-          icon="verified_user"
-          color="success"
-          progress={100}
-        />
-        <MetricCard
-          label="PEAK OCCUPANCY"
-          value="89%"
-          trend="+5.1%"
-          trendType="negative"
-          icon="speed"
-          color="danger"
-          progress={89}
-        />
+        <MetricCard label="TOTAL VISITORS" value={spatialMetrics.visitors} trend="+12.5%" trendType="positive" icon="groups" color="primary" progress={82} />
+        <MetricCard label="DWELL TIME AVG" value={spatialMetrics.dwellTime} trend="+3.2%" trendType="neutral" icon="schedule" color="warning" progress={65} />
+        <MetricCard label="SAFETY INCIDENTS" value={spatialMetrics.safetyIncidents.toString()} trend="-100%" trendType="positive" icon="verified_user" color="success" progress={100} />
+        <MetricCard label="PEAK OCCUPANCY" value={spatialMetrics.occupancy} trend="+5.1%" trendType="negative" icon="speed" color="danger" progress={89} />
       </div>
+
+      {insights && (
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 animate-in slide-in-from-top-4 duration-500">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+              <span className="material-symbols-outlined text-lg">auto_awesome</span>
+            </div>
+            <h3 className="font-bold text-lg text-primary">A.I. Spatial Analysis</h3>
+          </div>
+          <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap prose prose-invert max-w-none">
+            {insights}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-12 lg:col-span-8 bg-surface-dark border border-border-dark rounded-2xl p-6">
           <div className="flex items-center justify-between mb-8">
             <h3 className="font-bold text-lg">Daily Activity Trends</h3>
-            <div className="flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="size-2 bg-primary rounded-full"></span>
-                <span className="text-slate-400">Current Period</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2 bg-slate-700 rounded-full"></span>
-                <span className="text-slate-400">Prev. Week</span>
-              </div>
+            <div className="flex items-center gap-4 text-xs text-slate-500">
+              <div className="flex items-center gap-2"><span className="size-2 bg-primary rounded-full"></span>Current Period</div>
+              <div className="flex items-center gap-2"><span className="size-2 bg-slate-700 rounded-full"></span>Prev. Week</div>
             </div>
           </div>
           <div className="h-[300px] w-full">
@@ -101,9 +93,7 @@ const OverviewPage: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#232f48" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 10}} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 10}} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#111722', border: '1px solid #232f48', borderRadius: '8px', fontSize: '12px' }}
-                />
+                <Tooltip contentStyle={{ backgroundColor: '#111722', border: '1px solid #232f48', borderRadius: '8px', fontSize: '12px' }} />
                 <Area type="monotone" dataKey="visitors" stroke="#135bec" strokeWidth={3} fillOpacity={1} fill="url(#colorVis)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -133,7 +123,7 @@ const OverviewPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-primary p-6 rounded-2xl text-white flex items-center justify-between group cursor-pointer hover:brightness-110 transition-all">
+          <div className="bg-primary p-6 rounded-2xl text-white flex items-center justify-between group cursor-pointer hover:brightness-110 transition-all shadow-xl shadow-primary/20">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Upcoming Milestone</p>
               <h4 className="font-bold text-lg">System Optimization</h4>
