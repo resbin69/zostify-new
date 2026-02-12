@@ -1,0 +1,7 @@
+{
+  "name": "Zostify Spatial Intelligence",
+  "description": "A high-end spatial analytics dashboard for monitoring foot traffic, safety zones, and congestion analysis in real-time.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
