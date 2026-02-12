@@ -5,18 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zostify Spatial Intelligence</title>
 
-    <!-- Tailwind CDN (works for now, but should move to proper install later) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
-    />
 
     <script>
       tailwind.config = {
@@ -28,3 +17,21 @@
               "background-light": "#f6f6f8",
               "background-dark": "#101622",
               "surface-dark": "#111722",
+              "border-dark": "#232f48",
+              danger: "#ef4444",
+              warning: "#f59e0b",
+              success: "#10b981",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="bg-background-dark text-slate-100">
+    <div id="root"></div>
+
+    <!-- IMPORTANT: match your actual entry file -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
